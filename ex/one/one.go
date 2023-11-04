@@ -3,6 +3,7 @@ package main
 import(
 	"fmt"
 	"time"
+	"flag"
 )
 
 func worker(ch chan int64, i int) {
@@ -13,8 +14,11 @@ func worker(ch chan int64, i int) {
 
 func main(){
 	ch := make(chan int64)
+	wn := flag.Int("wn", 15,"an int")
 
-	for i:=0; i<10; i++ {
+
+	flag.Parse()
+	for i:=0; i<*wn; i++ {
 		go worker(ch, i)
 	}
 

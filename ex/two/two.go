@@ -1,44 +1,49 @@
 package main
 
 import (
-	"bufio"
+	"context"
 	"fmt"
-	"os"
-	"strings"
-	"time"
-	"strconv"
 	"math/rand"
+	"time"
+	"flag"
 )
 
 func main() {
-	fmt.Print("Enter the programm running time in seconds: ")				//получение времени работы
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')					
-		if err != nil {
-			fmt.Println(err)
-		}
-	input = strings.TrimSuffix(input, "\r\n")
-	secondsOfWork, err := strconv.ParseInt(input, 10, 64)
-	if err != nil {
-		fmt.Println(err)
-	}
+	sec := flag.Int("sec", 15,"an int")															//получение времени работы из флага
+	flag.Parse()
+
+
+	ctx, cancel := context.WithDeadline(context.Background(),time.Now().Add(time.Second*time.Duration(*sec)))	//создание контекста
+	defer cancel()
+
 	
-	source := rand.NewSource(time.Now().UnixMicro())						//отправляемые данные			
+	source := rand.NewSource(time.Now().UnixMicro())											//отправляемые данные			
 	sRand := rand.New(source)
 
 
 	ch := make(chan int)
-	go showInt(ch)
+	defer close(ch)
+	go showInt(ctx, ch)
 
 
-	begin := time.Now().Unix()
-	for secondsOfWork > time.Now().Unix() - begin {
-		ch <- sRand.Int()
+	var i int
+	for i<1 {
+		select {
+		case <-ctx.Done():																		//break не срабатывает
+			i = 1
+		default:
+			ch <- sRand.Int()
+		}
 	}
 }
 
-func showInt (ch chan int) {
+func showInt (ctx context.Context, ch chan int) {
 	for {
-		fmt.Println(<- ch)
+		select {
+		case <-ctx.Done():
+			return
+		case r := <-ch:
+			fmt.Println(r)
+		}
 	}
 }
