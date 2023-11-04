@@ -42,8 +42,8 @@ func showInt (ctx context.Context, ch chan int) {
 		select {
 		case <-ctx.Done():
 			return
-		case r := <-ch:
-			fmt.Println(r)
+		default:
+			fmt.Println(<-ch)
 		}
 	}
 }
