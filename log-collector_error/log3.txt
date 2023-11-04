@@ -1,0 +1,6 @@
+{"ts":"2023-09-01 12:23:54.123Z","level":"error","msg":"log message"}
+{"ts":"2023-09-01 12:23:54.124Z","level":"error","msg":"log message"}
+{"ts":"2023-09-01 12:23:54.125Z","level":"error","msg":"log message"}
+{"ts":"2023-09-01 12:23:54.266Z","level":"error","msg":"log message"}
+{"ts":"2023-09-01 13:23:54.126Z","level":"error","msg":"log message"}
+{"ts":"2023-09-01 14:23:54.126Z","level":"error","msg":"log message"}

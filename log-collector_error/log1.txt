@@ -1,0 +1,2 @@
+{"ts":"2023-09-01 12:23:54.231Z","level":"error","msg":"log message"}
+{"ts":"2023-09-01 13:15:54.231Z","level":"error","msg":"log message"}
