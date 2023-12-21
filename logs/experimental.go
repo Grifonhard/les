@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"slog"
+	"os"
+	"log/slog"
 )
 
 func main() {
-	fmt.Println(slog.info("hello", "count", 3))
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	logger.Info("hello")
 }
