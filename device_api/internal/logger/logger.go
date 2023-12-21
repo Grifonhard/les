@@ -10,7 +10,7 @@ import (
 )
 
 //getting the path and name of file to save logs
-func getPathAndName () string {
+func getPathAndName (s string) string {
 	//getting the path to save logs
 	pathToExec, err := os.Executable()
 	if err != nil {
@@ -21,15 +21,15 @@ func getPathAndName () string {
 
 	//getting the name of log file
 	
-	
-	pathAndFileName := filepath.Join(path, "logs.log")
+	fileName := s + "logs.log"
+	pathAndFileName := filepath.Join(path, fileName)
 	return pathAndFileName
 }
 
 
-func Start () (*slog.Logger, *os.File){
+func Start (s string) (*slog.Logger, *os.File){
 	//create/open file
-	file, err := os.OpenFile(getPathAndName(), os.O_RDWR|os.O_CREATE|os.O_APPEND, os.FileMode(0666)) 	//создание/открытие файла	
+	file, err := os.OpenFile(getPathAndName(s), os.O_RDWR|os.O_CREATE|os.O_APPEND, os.FileMode(0666)) 	//создание/открытие файла	
 	if err != nil {
 		log.Fatal(err)
 	}

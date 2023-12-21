@@ -41,9 +41,16 @@ var source = rand.NewSource(time.Now().UnixMicro())
 var sRand = rand.New(source)
 
 
-//отправляемые данные
+//sent data
 func DeviceGet () Device {
 	i := sRand.Intn(20)
 	d := devices[i]
 	return d
+}
+
+//requested data
+func IdGet () string {
+	i := sRand.Intn(20)
+	d := devices[i]
+	return d.Id
 }
