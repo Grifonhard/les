@@ -14,13 +14,22 @@ import (
 	"github.com/caarlos0/env/v10"
 )
 
+type config struct {
+	Port string `env:"PORT,file" envDefault:"port.env"`
+}
 
-
-func main() {
+func main() {	
 	//start logging
 	logg, file := logger.Start("server")
 	defer file.Close()
 	slog.SetDefault(logg)
+
+	//getting port from enviromoment 
+	cfg := config{}
+	if err := env.Parse(&cfg); err != nil {
+		logg.Info(fmt.Sprint(err))
+	}
+
 
 	//request processing
 	http.HandleFunc("/device", func (wrtr http.ResponseWriter, req *http.Request){
@@ -57,5 +66,5 @@ func main() {
 	})
 	
 	//server
-	log.Fatal(http.ListenAndServe(":8080", nil))	
+	log.Fatal(http.ListenAndServe(cfg.Port, nil))	
 }

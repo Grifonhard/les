@@ -15,8 +15,12 @@ import (
 
 	"github.com/Grifonhard/les/device_api/internal/devices"
 	"github.com/Grifonhard/les/device_api/internal/logger"
+	"github.com/caarlos0/env/v10"
 )
 
+type config struct {
+	Port string `env:"PORT,file" envDefault:"port.env"`
+}
 
 func main () {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -28,11 +32,19 @@ func main () {
 	defer file.Close()
 	slog.SetDefault(logg)
 
-	wg.Add(1)
-	go processPost(&wg, ctx, logg) 
+	//getting port from enviromoment
+	cfg := config{}
+	if err := env.Parse(&cfg); err != nil {
+		logg.Info(fmt.Sprint(err))
+	}
+	url := "http://localhost" + cfg.Port + "/device"
+
 
 	wg.Add(1)
-	go processGet(&wg, ctx, logg)
+	go processPost(&wg, ctx, logg, url) 
+
+	wg.Add(1)
+	go processGet(&wg, ctx, logg, url)
 
 	signal.Notify(c)
 	_ = <-c
@@ -40,7 +52,7 @@ func main () {
 	wg.Wait()
 }
 
-func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
+func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger, url string) {
 	defer wg.Done()
 	client := &http.Client{}
 	for {
@@ -55,7 +67,7 @@ func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
 				slog.Error(fmt.Sprint(err))
 			}
 			//Send request
-			req1, err := http.NewRequest(http.MethodPost, "http://localhost:8080/device", bytes.NewBuffer(djson))
+			req1, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(djson))
 			if err != nil {
 				slog.Error(fmt.Sprint(err))
 			}	
@@ -74,7 +86,7 @@ func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
 	}
 }
 
-func processGet (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
+func processGet (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger, url string) {
 	defer wg.Done()	
 	client := &http.Client{}
 	for {
@@ -84,7 +96,7 @@ func processGet (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
 			return
 		case <- time.After(time.Second):
 			//receiving id for GET
-			requstURL := "http://localhost:8080/device?id=" + devices.IdGet()
+			requstURL := url + "?id=" + devices.IdGet()
 			//data request
 			req2, err := http.NewRequest(http.MethodGet, requstURL, nil)
 			if err != nil {
