@@ -1,16 +1,17 @@
 package main
 
 import (
-	"context"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
 	"sync"
 	"time"
-	"os/signal"
 
 	"github.com/Grifonhard/les/device_api/internal/devices"
 	"github.com/Grifonhard/les/device_api/internal/logger"
@@ -20,7 +21,8 @@ import (
 func main () {
 	ctx, cancel := context.WithCancel(context.Background())
 	var wg sync.WaitGroup
-	
+	c := make(chan os.Signal, 1)
+ 	
 	//start logging
 	logg, file := logger.Start("client")
 	defer file.Close()
@@ -32,19 +34,20 @@ func main () {
 	wg.Add(1)
 	go processGet(&wg, ctx, logg)
 
-	
-	wg.Wait()
+	signal.Notify(c)
+	_ = <-c
 	cancel()
+	wg.Wait()
 }
 
 func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
+	defer wg.Done()
 	client := &http.Client{}
-
 	for {
 		select {
 		case <- ctx.Done():
 			logg.Info("processPost stop")
-			break
+			return
 		case <- time.After(time.Second):
 			//receiving a device for POST
 			djson, err := json.Marshal(devices.DeviceGet())
@@ -69,19 +72,21 @@ func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
 			slog.Info(string(data1))
 		}
 	}
-	wg.Done()
 }
 
 func processGet (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
+	defer wg.Done()	
 	client := &http.Client{}
 	for {
 		select {
 		case <- ctx.Done():
 			logg.Info("processGet stop")
-			break
+			return
 		case <- time.After(time.Second):
+			//receiving id for GET
+			requstURL := "http://localhost:8080/device?id=" + devices.IdGet()
 			//data request
-			req2, err := http.NewRequest(http.MethodGet, "http://localhost:8080/device?id=000000-00000-00000-000002", nil)
+			req2, err := http.NewRequest(http.MethodGet, requstURL, nil)
 			if err != nil {
 				slog.Error(fmt.Sprint(err))
 			}	
@@ -103,6 +108,5 @@ func processGet (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger) {
 			slog.Info("device get from server: ", slog.String("ID", d.Id), slog.String("Language", d.Language), slog.Float64("Latitude", d.Latitude), slog.Float64("Longitude", d.Longitude), slog.String("Os_name", d.Os_name), slog.String("Os_version", d.Os_version))
 		}
 	}
-	wg.Done()
 }	
 	

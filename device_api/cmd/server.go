@@ -11,7 +11,10 @@ import (
 	"github.com/Grifonhard/les/device_api/internal/devices"
 	"github.com/Grifonhard/les/device_api/internal/logger"
 	"github.com/Grifonhard/les/device_api/internal/storage"
+	"github.com/caarlos0/env/v10"
 )
+
+
 
 func main() {
 	//start logging
