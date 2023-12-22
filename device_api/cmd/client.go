@@ -39,11 +39,8 @@ func main () {
 	}
 	url := "http://localhost" + cfg.Port + "/device"
 
-
-	wg.Add(1)
 	go processPost(&wg, ctx, logg, url) 
 
-	wg.Add(1)
 	go processGet(&wg, ctx, logg, url)
 
 	signal.Notify(c)
@@ -53,6 +50,7 @@ func main () {
 }
 
 func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger, url string) {
+	wg.Add(1)
 	defer wg.Done()
 	client := &http.Client{}
 	for {
@@ -87,6 +85,7 @@ func processPost (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger, ur
 }
 
 func processGet (wg *sync.WaitGroup, ctx context.Context, logg* slog.Logger, url string) {
+	wg.Add(1)
 	defer wg.Done()	
 	client := &http.Client{}
 	for {
