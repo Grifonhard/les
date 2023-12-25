@@ -1,0 +1,6 @@
+1.08s elapsed
+0.34s elapsed
+0.32s elapsed
+0.21s elapsed
+0.26s elapsed
+0.28s elapsed
