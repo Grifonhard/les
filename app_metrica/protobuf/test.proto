@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+//отправка информации от девайса (через API gateway) в БД
+message PushData {
+    string id = 1;
+    string token = 2;
+   
+    enam Events {
+        EVENT_1 = 0;
+        EVENT_2 = 1;
+        EVENT_3 = 2;
+        ..
+    }
+
+    Events event = 3;
+    int64 numEvent = 4;
+    string date = 5;
+}
+
+//Запрос информации из БД
+message ReqPullData {
+
+}
+//Получение информации из БД
+message ResPullData {
+
+}
+
+//аутентификация
+message auth {
+    string login = 1;
+    string password = 2;
+    bool newDevice = 3;    
+}
+
+//получение jwt - подписи
+message jwtGet {
+    string jwt = 1;
+    string id = 2;
+}
+
+//получение порта
+message ReqPortGet {    
+}
+
+message ResPortGet {
+    int64 port = 1;
+}
+
+//добавление id в базу
+message PushId {
+    string id = 1;
+    string jwt = 2;
+    string data1 =3;
+    ...
+}
+
+
