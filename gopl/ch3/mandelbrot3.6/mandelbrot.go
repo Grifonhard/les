@@ -19,7 +19,8 @@ func main() {
 		for px := 0; px < width; px++ {
 			x := float64(px)/width*(xmax-xmin) + xmin
 			z := complex(x, y)
-			img.Set(px, py, mandelbrot(z))
+			color := superSampling(x, y, z)
+			img.Set(px, py, color)
 		}
 	}
 	png.Encode(os.Stdout, img)
@@ -27,7 +28,6 @@ func main() {
 
 func mandelbrot(z complex128) color.RGBA {
 	const iterations = 200
-	//const contrast = 15
 	var v complex128
 	var R, G, B, A uint8
 	A = 255
@@ -58,4 +58,21 @@ func mandelbrot(z complex128) color.RGBA {
 		}
 	}
 	return color.RGBA{R, G, B, A}
+}
+
+func superSampling(x, y float64, z complex128) color.RGBA {
+	colorPixel := mandelbrot(z)
+	colorPixel1 := mandelbrot(complex((x + 1/256), (y + 1/256)))
+	colorPixel2 := mandelbrot(complex((x + 1/256), (y - 1/256)))
+	colorPixel3 := mandelbrot(complex((x - 1/256), (y + 1/256)))
+	colorPixel4 := mandelbrot(complex((x - 1/256), (y - 1/256)))
+	Rsample := uint8((uint16(colorPixel1.R) + uint16(colorPixel2.R) + uint16(colorPixel3.R) + uint16(colorPixel4.R)) / 4)
+	Gsample := uint8((uint16(colorPixel1.G) + uint16(colorPixel2.G) + uint16(colorPixel3.G) + uint16(colorPixel4.G)) / 4)
+	Bsample := uint8((uint16(colorPixel1.B) + uint16(colorPixel2.B) + uint16(colorPixel3.B) + uint16(colorPixel4.B)) / 4)
+	var color color.RGBA
+	color.R = uint8((uint16(colorPixel.R) + uint16(Rsample)) / 2)
+	color.G = uint8((uint16(colorPixel.G) + uint16(Gsample)) / 2)
+	color.B = uint8((uint16(colorPixel.B) + uint16(Bsample)) / 2)
+	color.A = 255
+	return color
 }
