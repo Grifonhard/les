@@ -34,15 +34,25 @@ func mandelbrot(z complex128) color.RGBA {
 	for n := uint8(0); n < iterations; n++ {
 		v = v*v + z
 		if cmplx.Abs(v) > 2 {
-			if n < 50 {
+			if n < 2 {
 				R = 255
-			} else if n < 100 {
-				G = 255
-			} else if n < 150 {
 				B = 255
-			} else {
+				G = 255
+			} else if n < 5 {
 				R = 255
 				G = 255
+			} else if n < 10 {
+				B = 255
+				G = 255
+			} else if n < 20 {
+				R = 255
+				B = 255
+			} else if n < 40 {
+				R = 255
+			} else if n < 80 {
+				G = 255
+			} else {
+				B = 255
 			}
 			return color.RGBA{R, G, B, A}
 		}
