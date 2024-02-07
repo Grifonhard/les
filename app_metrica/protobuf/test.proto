@@ -19,41 +19,30 @@ enam Events {
 
 //отправка информации от девайса (через API gateway) в БД
 message PushData {
-    string id = 1;
+    string login = 1;
     int32 time = 2;
     Events event = 3;
 }
 
 //Запрос информации из БД
 message ReqPullData {
-
 }
 //Получение информации из БД
 message ResPullData {
 
 }
 
-//аутентификация
-message auth {
-    string login = 1;
-    string password = 2;
-    bool newDevice = 3;    
+//регистрация, добавление в базу нового девайса
+message PushDevice {
+    string login = 1,
+    string password = 2,
+    int32 time = 3,
+    string mac = 4
 }
 
-//получение порта
-message ReqPortGet {    
+//авторизация 
+message AuthDevice {
+    string login = 1,
+    string password = 2,
+    int32 time = 3
 }
-
-message ResPortGet {
-    int64 port = 1;
-}
-
-//добавление id в базу
-message PushId {
-    string id = 1;
-    string jwt = 2;
-    string data1 =3;
-    ...
-}
-
-

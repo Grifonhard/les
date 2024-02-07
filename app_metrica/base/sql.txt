@@ -61,12 +61,12 @@ create table advertising
 create index adv_id on advertising(id)
 
 
-create recursive view device_adv_stat as
-    select id, sum(case time_view > 0 then time_view end)
+create recursive view adv_stat as
+    select advertiser_name, sum(case time_view > 0 then time_view end)
     from advertising
-    group by id
+    group by advertiser_name
 
-create index adv_stat_id on device_adv_stat(id)
+create index adv_stat_id on device_adv_stat(advertiser_name)
 
 
 create recursive view device_tools_stat as

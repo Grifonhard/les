@@ -1,0 +1,36 @@
+//регистрация
+1.post Request
+
+POST ..
+{
+    "login": ..,
+    "password": ..,
+    "time": ..,
+    "mac": ..
+}
+
+2.post Response
+
+POST ..
+authorization: 'jwt-token'
+
+//авторизация
+1.get Request
+{
+    "login": ..,
+    "password": ..,
+    "time": ..
+}
+
+2.get Response
+authorization: 'jwt-token'
+
+//передача данных сервису-посреднику 
+POST ..
+authorization: 'jwt-token'
+{
+    "login": ..,
+    "time": ..,
+    "tool": "tool1"
+}
+
