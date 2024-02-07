@@ -7,6 +7,8 @@ create table userInfo
     mac macaddr NOT NULL
 );
 
+create unique index u_log on userInfo (login)
+
 
 create table loginExitCollapse
 (
@@ -68,7 +70,7 @@ create index adv_stat_id on device_adv_stat(id)
 
 
 create recursive view device_tools_stat as
-    select id, count(case like('tool1') then 1 end), count(case like('tool2') then 1 end), count(case like('tool3') then 1 end), count(case like('tool4') then 1 end)
+    select id, count(case toolUsed is like('tool1') then 1 end), count(case toolUsed is like('tool2') then 1 end), count(case toolUsed is like('tool3') then 1 end), count(case toolUsed is like('tool4') then 1 end)
     from tools
     group by id
 

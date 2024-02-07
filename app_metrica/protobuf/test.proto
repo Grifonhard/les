@@ -1,20 +1,27 @@
 syntax = "proto3";
 
+//события поступающие от девайса
+enam Events {
+        login = 0;
+        exit = 1;
+        collapse = 2;
+        tool1_start = 3;
+        tool1_close = 4;
+        tool2_start = 5;
+        tool2_close = 6;
+        tool3_start = 7;
+        tool3_close = 8;
+        tool4_start = 9;
+        tool4_close = 10;
+        adv_start = 11;
+        adv_close = 12
+    }
+
 //отправка информации от девайса (через API gateway) в БД
 message PushData {
     string id = 1;
-    string token = 2;
-   
-    enam Events {
-        EVENT_1 = 0;
-        EVENT_2 = 1;
-        EVENT_3 = 2;
-        ..
-    }
-
+    int32 time = 2;
     Events event = 3;
-    int64 numEvent = 4;
-    string date = 5;
 }
 
 //Запрос информации из БД
@@ -31,12 +38,6 @@ message auth {
     string login = 1;
     string password = 2;
     bool newDevice = 3;    
-}
-
-//получение jwt - подписи
-message jwtGet {
-    string jwt = 1;
-    string id = 2;
 }
 
 //получение порта
