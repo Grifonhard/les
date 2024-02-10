@@ -3,9 +3,7 @@ create table userInfo
     id serial PRIMARY KEY,
     login character varing(20) UNIQUE NOT NULL,
     password character varing(10) NOT NULL CHECK(char_length > 6),
-    timeReg timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
-    mac macaddr NOT NULL,
-    client bool DEFAULT(0)
+    timeReg timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
 );
 
 create unique index u_log on userInfo (login)
