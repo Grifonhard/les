@@ -1,7 +1,11 @@
 package funct
 
-import 
+import (
+	"fmt"
 
-func show(){
+	"github.com/Grifonhard/les/tree/main/experiment/namespaces/count"
+)
 
+func Show(){
+	fmt.Println(count.Count)
 }
